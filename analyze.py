@@ -63,9 +63,9 @@ hos_df = pd.read_excel("강남구_치과의원병원_목록.xlsx", sheet_name="m
 # my_hdong = input("분석할 행정동의 정확한 명칭을 입력해주세요: ")
 #
 
-user_input_type='정형외과'
-simsa_percent='46%'
-my_hdong='경기도 시흥시 능곡동'
+user_input_type='치'
+simsa_percent='58%'
+my_hdong='서울특별시 강남구 역삼1동'
 
 user_input_loc = hdong_code_df['행정기관코드'][((hdong_code_df['통합주소'].to_list()).index(my_hdong))]
 
@@ -688,7 +688,7 @@ clh_closedate_holder = []
 clh_hosname_holder = []
 clh_area_holder = []
 for i in range(len(clh_closed_date)):
-    if (clh_closed_date[i] > (datetime.today() - relativedelta(years=2))) and (user_type_input in closed_hos_df['진료과분류'].to_list()[i]) and (closed_hos_df['행정동코드'].to_list()[i] == user_input_loc):
+    if (clh_closed_date[i] > (datetime.today() - relativedelta(years=2))) and (user_input_type in closed_hos_df['진료과분류'].to_list()[i]) and (closed_hos_df['행정동코드'].to_list()[i] == user_input_loc):
         clh_opendate_holder.append(closed_hos_df['개설일자'].to_list()[i].strftime("%Y년 %m월 %d일"))
         clh_closedate_holder.append(closed_hos_df['폐업일자'].to_list()[i].strftime("%Y년 %m월 %d일"))
         clh_hosname_holder.append(closed_hos_df['사업장명'].to_list()[i])
@@ -1189,7 +1189,6 @@ result = {
 # In[123]:
 
 
-result
 
 
 
