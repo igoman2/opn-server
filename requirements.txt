@@ -24,3 +24,4 @@ tabulate~=0.8.9
 seaborn~=0.11.2
 pyecharts~=1.9.1
 haversine~=2.5.1
+openpyxl=21.3.1
