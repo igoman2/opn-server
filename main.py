@@ -1,23 +1,15 @@
+import warnings
+from datetime import datetime
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from dateutil.relativedelta import relativedelta
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import pandas as pd
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pyecharts as pyc
 from tabulate import tabulate
-from datetime import datetime
-import re
-from haversine import haversine
-import time
-from dateutil.relativedelta import relativedelta
 
-
-
-
-import warnings
 warnings.filterwarnings(action='ignore')
 
 
