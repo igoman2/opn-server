@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from tabulate import tabulate
 
+# In[3]:
 warnings.filterwarnings(action='ignore')
 
 
