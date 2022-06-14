@@ -15,7 +15,6 @@ import time
 from dateutil.relativedelta import relativedelta
 
 
-# In[3]:
 
 
 import warnings
