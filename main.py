@@ -229,53 +229,10 @@ async def report(department: str, location: str):
         simple_b_holder.append(b_df['개원년도'][i].year)
     b_df['개원년도'] = simple_b_holder
 
-    # 텍스트 생성
-    print("1. 개요")
-    print()
-    print("  A. Key Metric")
-    print("      i. 개원할 진료과: {}".format(user_input_type))
     my_print = ''
     for t in type_cf:
         my_print += t + ", "
     my_print = my_print[:-2]
-    print("     ii. 분석에 활용되는 진료과: {}".format(my_print))
-    print("         Note: 선택한 진료과와 경쟁 관계에 있는 진료과를 모두 분석에 활용합니다.")
-    print("    iii. 개원 매력도: 높음")
-    print()
-    print("  B. Text")
-    print("      i. {}은 {}의 행정동으로, 지리상 {}을 포함하고 있습니다. ".format(user_input_loc_p1, user_input_loc_p2, user_input_loc_r))
-    if len(s_hn_holder) == 0:
-        print("         오픈닥터의 개원 입지 분석 시스템에서 {} 내 분석 대상 의원은 없습니다.".format(user_input_loc_p1))
-    else:
-        print(
-            "         오픈닥터의 개원 입지 분석 시스템에서 {} 내 분석 대상 의원은 총 {}개 입니다.".format(user_input_loc_p1, str(len(s_hn_holder))))
-    if len(b_hn_holder) == 0:
-        print("         또한 병원급 의료기관은 없습니다.")
-    else:
-        print("         또한 병원급 의료기관은 {}개 존재하며, {}가 있습니다.".format(str(len(b_hn_holder)), b_str_holder))
-    print()
-
-    # 용어 설명
-    print("     ii. 용어 설명 [TABLE]")
-    print(tabulate(explain_df, headers='keys', tablefmt='psql', showindex=False))
-    print()
-
-    # 의료기관 목록
-    print("  C. Chart")
-    print()
-    print("      i. 의료기관 목록 [TABLE]")
-    print("         ({}) 의원".format(my_print))
-    print()
-    print("         1. 의원급")
-    if len(s_df) > 10:
-        print(tabulate(s_df[:10], headers='keys', tablefmt='psql', showindex=False))
-        print("--- ( 더 보기 ) ---")
-    else:
-        print(tabulate(s_df, headers='keys', tablefmt='psql', showindex=False))
-    print()
-    print("         2. 병원급")
-    print(tabulate(b_df, headers='keys', tablefmt='psql', showindex=False))
-    print()
 
     # JSON 출력을 위한 intro 딕셔너리 홀더에 담기
     intro = {
@@ -336,7 +293,7 @@ async def report(department: str, location: str):
 
     # # 2. 시장 분석
 
-    # In[146]:
+    # In[10]:
 
     # 시장분석용 파일 불러오기
     # 2020년, 2021년 병의원 목록 불러오기
@@ -515,11 +472,11 @@ async def report(department: str, location: str):
         hos_2020_count = len(hos_4div_df[(hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2020_4Q") & (
             hos_4div_df['진료과분류'].str.contains(chests_str))])
         hos_2020_count = len(hos_4div_df[(hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2020_4Q") & (
-                hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
+                    hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
         hos_2021_count = len(hos_4div_df[(hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2021_4Q") & (
             hos_4div_df['진료과분류'].str.contains(chests_str))])
         hos_2021_count = len(hos_4div_df[(hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2021_4Q") & (
-                hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
+                    hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
     else:
         hos_2020_count = len(hos_4div_df[(hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2020_4Q") & (
             hos_4div_df['진료과분류'].str.contains(user_input_type))])
@@ -527,10 +484,6 @@ async def report(department: str, location: str):
             hos_4div_df['진료과분류'].str.contains(user_input_type))])
     hos_now_count = len(s_hn_holder)
 
-    # Key Metric
-    print("2. 시장 분석")
-    print()
-    print("  A. Key Metric")
     if market_size_12m >= 10000:
         if market_size_12m % 10000 == 0:
             market_size_12m = str(market_size_12m // 10000) + "억원"
@@ -538,23 +491,14 @@ async def report(department: str, location: str):
             market_size_12m = str(market_size_12m // 10000) + "억 " + str(market_size_12m % 10000) + "만원"
     else:
         market_size_12m = str(market_size_12m) + "만원"
-    print("      i. 시장규모 월 {}".format(market_size_12m))
-    print("     ii. 시장규모 장기 추세 {}".format(three_ident))
-    print("    iii. 의원 개수 {}개".format(hos_now_count))
+
     if hos_now_count > hos_2020_count:
         count_tendency = "증가"
     elif hos_now_count == hos_2020_count:
         count_tendency = "유지"
     else:
         count_tendency = "감소"
-    print("     iv. 의원 개수 장기 추세 {}".format(count_tendency))
-    print("      v. 의원 1평당 매출액 월 {}만원".format(pp_short_cost))
-    print("     vi. 1평당 매출액 장기 추세 {}".format(three_ident2))
-    print()
 
-    # Text
-    print("  B. Text")
-    print("      i. {}의 {} 시장규모는 평균 월 {}만원 입니다.".format(user_input_loc_p1, user_input_type, market_size_12m))
     if max_msize >= 10000:
         if max_msize % 10000 == 0:
             max_msize = str(max_msize // 10000) + "억원"
@@ -569,8 +513,7 @@ async def report(department: str, location: str):
             min_msize = str(min_msize // 10000) + "억 " + str(min_msize % 10000) + "만원"
     else:
         min_msize = str(min_msize) + "만원"
-    print("         지난 12개월 중 최대값은 {} ({}년 {}월) 이며, 최소값은 {} ({}년 {}월) 입니다.".format(max_msize, max_year, max_month,
-                                                                                   min_msize, min_year, min_month))
+
     if early_size >= 10000:
         if early_size % 10000 == 0:
             early_size = str(early_size // 10000) + "억원"
@@ -585,26 +528,6 @@ async def report(department: str, location: str):
             late_size = str(late_size // 10000) + "억 " + str(late_size % 10000) + "만원"
     else:
         late_size = str(late_size) + "만원"
-    print("         최근 3년간 시장규모 추세는 {}년 {}에서 {}년 {}으로 {}% {}하였습니다.".format(early_year, early_size, late_year, late_size,
-                                                                           abs(three_percent), three_ident))
-    print()
-    print("         {}의 현재 {} 의원 개수는 {}개 입니다.".format(user_input_loc_p1, user_input_type, hos_now_count))
-    if count_tendency == "유지":
-        print("         최근 3년간 의원 개수 추세는 2020년 {}개에서 2022년 {}개로 {}개 {}되었습니다..".format(hos_2020_count, hos_now_count,
-                                                                                      abs(hos_now_count - hos_2020_count),
-                                                                                      count_tendency))
-    else:
-        print("         최근 3년간 의원 개수 추세는 2020년 {}개에서 2022년 {}개로 {}개 {}하였습니다.".format(hos_2020_count, hos_now_count,
-                                                                                     abs(hos_now_count - hos_2020_count),
-                                                                                     count_tendency))
-    print()
-    print("         평수가 큰 의원일수록 매출이 높은 경향이 있기 때문에, 평수의 효과를 제거한 1평당 매출액을 확인하는 것이 중요합니다.")
-    print("         {} 의원 1평당 매출액은 월 {}만원으로, 50평 의원 기준으로 환산하면 {}만원입니다.".format(user_input_loc_p1, pp_short_cost,
-                                                                               pp_short_cost * 50))
-    print("         최근 3년 추세는 {}년 {}만원에서 {}년 {}만원으로 {}% {}하였습니다.".format(p_early_year, p_early_size, p_late_year,
-                                                                         p_late_size, abs(three_percent2),
-                                                                         three_ident2))
-    print()
 
     # 테이블 구상하기
     t1 = rec12m_df.groupby('TA_YM').sum().reset_index()
@@ -612,29 +535,10 @@ async def report(department: str, location: str):
     for tt in t1['TA_YM'].to_list():
         tt_holder.append(datetime.strptime(str(tt), "%Y%m"))
 
-    # Chart
-    print("  C. Chart")
-    print()
-    print("      i. 시장규모 단기 추세 (12개월) [LINE]")
-
-    plt.plot(tt_holder, round(t1['EST_HGA'] / 10000), label="시장규모", linewidth=3, marker='o')
-    plt.show()
-    print()
-    print("     ii. 시장규모 장기 추세 (3년) [BAR]")
     this_yy_holder = []
     for y in yy_holder:
         this_yy_holder.append(str(y))
-    plt.bar(this_yy_holder, ss_holder, width=0.3)
-    for i, v in enumerate(this_yy_holder):
-        plt.text(v, ss_holder[i], ss_holder[i],
-                 fontsize=11,
-                 color="black",
-                 horizontalalignment='center',
-                 verticalalignment='bottom')
-    plt.show()
-    print()
 
-    print("    iii. 의원 개수 단기 추세 (12개월) [LINE]")
     if (user_input_type == "일반의원"):
         hos_2020_1st_count = len(hos_4div_df[
                                      (hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2020_1Q") & (
@@ -838,28 +742,28 @@ async def report(department: str, location: str):
                                          hos_4div_df['진료과분류'].str.contains(chests_str))])
         hos_2020_1st_count = len(hos_4div_df[
                                      (hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2020_1Q") & (
-                                             hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
+                                                 hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
         hos_2020_2nd_count = len(hos_4div_df[
                                      (hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2020_2Q") & (
-                                             hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
+                                                 hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
         hos_2020_3rd_count = len(hos_4div_df[
                                      (hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2020_3Q") & (
-                                             hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
+                                                 hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
         hos_2020_4th_count = len(hos_4div_df[
                                      (hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2020_4Q") & (
-                                             hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
+                                                 hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
         hos_2021_1st_count = len(hos_4div_df[
                                      (hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2021_1Q") & (
-                                             hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
+                                                 hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
         hos_2021_2nd_count = len(hos_4div_df[
                                      (hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2021_2Q") & (
-                                             hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
+                                                 hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
         hos_2021_3rd_count = len(hos_4div_df[
                                      (hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2021_3Q") & (
-                                             hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
+                                                 hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
         hos_2021_4th_count = len(hos_4div_df[
                                      (hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2021_4Q") & (
-                                             hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
+                                                 hos_4div_df['진료과분류'].str.contains(nochests_str) == False)])
     else:
         hos_2020_1st_count = len(hos_4div_df[
                                      (hos_4div_df['행정동코드'] == user_input_loc) & (hos_4div_df['분기'] == "2020_1Q") & (
@@ -889,42 +793,14 @@ async def report(department: str, location: str):
     hos_20to22_count_holder = [hos_2021_2nd_count, hos_2021_3rd_count, hos_2021_4th_count, hos_now_count]
     hos_divname_holder = ["2021_2Q", "2021_3Q", "2021_4Q", "2022_1Q"]
 
-    plt.plot(hos_divname_holder, hos_20to22_count_holder, label="분기당 개수", linewidth=3, marker='o')
-    plt.show()
-
-    print("    iv. 의원 개수 장기 추세 (3년) [BAR]")
-    plt.bar(["2020", "2021", "2022"], [hos_2020_4th_count, hos_2021_4th_count, hos_now_count], width=0.3)
-    for i, v in enumerate(["2020", "2021", "2022"]):
-        plt.text(v, [hos_2020_4th_count, hos_2021_4th_count, hos_now_count][i],
-                 [hos_2020_4th_count, hos_2021_4th_count, hos_now_count][i],
-                 fontsize=11,
-                 color="black",
-                 horizontalalignment='center',
-                 verticalalignment='bottom')
-    plt.show()
-    print()
-
-    print("      v. 의원 1평당 매출액 단기 추세 (12개월) [LINE]")
     t2 = rec12m_df.groupby('TA_YM').mean().reset_index()
     tt2_holder = []
     for tt in t2['TA_YM'].to_list():
         tt2_holder.append(datetime.strptime(str(tt), "%Y%m"))
-    plt.plot(tt2_holder, round(t2['profit_per_area'] / 10000), label="1평당 매출액", linewidth=3, marker='o')
-    plt.show()
-    print()
 
-    print("    vi. 의원 1평당 매출액 장기 추세 (3년) [BAR]")
     that_yy_holder = []
     for y in ppyy_holder:
         that_yy_holder.append(str(y))
-    plt.bar(that_yy_holder, ppss_holder, width=0.3)
-    for i, v in enumerate(that_yy_holder):
-        plt.text(v, ppss_holder[i], ppss_holder[i],
-                 fontsize=11,
-                 color="black",
-                 horizontalalignment='center',
-                 verticalalignment='bottom')
-    plt.show()
 
     # JSON 출력을 위한 market_analysis 딕셔너리 홀더에 담기
     market_analysis = {
@@ -1009,7 +885,7 @@ async def report(department: str, location: str):
 
     # # 3. 경쟁 분석
 
-    # In[158]:
+    # In[14]:
 
     # 전체 의원 평균 매출액
     # 신규 의원 평균 매출액
@@ -1028,8 +904,7 @@ async def report(department: str, location: str):
         'EST_HGA'].to_list()
     # 해당 의원 코드들 리스트
     analysis_simcd_list = \
-        vs_analysis_df.groupby('sim_cd').sum().sort_values(by="EST_HGA", ascending=False).reset_index()[
-            'sim_cd'].to_list()
+    vs_analysis_df.groupby('sim_cd').sum().sort_values(by="EST_HGA", ascending=False).reset_index()['sim_cd'].to_list()
     # 해당 의원들 개수 리스트
     analysis_count_list = []
 
@@ -1145,22 +1020,8 @@ async def report(department: str, location: str):
     else:
         all_hospital_average_profit = str(round(np.mean(analysis_ppa_list) // 10000)) + "만원"
 
-    # 경쟁 분석
-    print("3. 경쟁 분석")
-    print()
-
-    # Key Metric
-    print("  A. Key Metric")
-    print("      i. 전체 의원 평균 매출액 {}만원".format(all_hospital_average_profit))
-    if len(analysis_simcd_list) <= 1:
-        print("         1. [예외] 의원 수 1개인 경우 공개 불가 - 의원 수가 1개이므로 매출액 공개가 어렵습니다.")
-
     if len(vs_newhos_name_holder) == 0:
         new_average_ppm = ""
-        print("     ii. 신규 의원에 대한 정보가 없습니다.")
-        print("         1. Note: 최근 24개월 내 개원한 의원")
-        print("    iii. 경쟁 유형 {}".format(percent_quali))
-        print("         1. Note: 독과점(HHI > 0.25), 균형적(0.15 <= HHI < 0.25), 치열함(HHI < 0.15)")
     else:
         new_average_ppm = round(np.mean(vs_newhos_profit_holder) / 10000)
         if new_average_ppm >= 10000:
@@ -1170,14 +1031,7 @@ async def report(department: str, location: str):
                 new_average_ppm = str(new_average_ppm // 10000) + "억 " + str(new_average_ppm % 10000) + "만원"
         else:
             new_average_ppm = str(new_average_ppm) + "만원"
-        print("     ii. 신규 의원 평균 매출액 월 {}".format(new_average_ppm))
-        print("         1. Note: 최근 24개월 내 개원한 의원")
-        print("    iii. 경쟁 유형 {}".format(percent_quali))
-        print("         1. Note: 독과점(HHI > 0.25), 균형적(0.15 <= HHI < 0.25), 치열함(HHI < 0.15)")
-    print()
 
-    # Text
-    print("  B. Text")
     my_hdong_average_profit = round(sum(analysis_ppa_list) / len(analysis_ppa_list) / 10000)
     if my_hdong_average_profit >= 10000:
         if my_hdong_average_profit % 10000 == 0:
@@ -1187,44 +1041,12 @@ async def report(department: str, location: str):
                 my_hdong_average_profit % 10000) + "만원"
     else:
         my_hdong_average_profit = str(my_hdong_average_profit) + "만원"
-    print("      i. {}의 {} 평균 매출액은 월 {}입니다.".format(user_input_loc_p1, user_input_type, my_hdong_average_profit))
-    if len(vs_newhos_name_holder) == 0:
-        print("         최근 24개월 내 개원한 신규 의원에 대한 정보가 없습니다.")
-    else:
-        print("         최근 24개월 내 개원한 신규 의원은 {}개이며, 이들의 평균 매출액은 {}만원으로 {} 전체 평균보다 {}.".format(
-            len(vs_newhos_opendate_holder), new_average_ppm, user_input_loc_p1, vs_quali))
-    print("         또한, 의원별 점유율을 토대로한 경쟁 지표는 {}로 산출됩니다.".format(round(sum(analysis_psq_list), 2)))
-    print("         통상 이 지표가 0.25보다 크면 독과점, 0.15와 0.25 사이면 균형적인 경쟁, 0.15보다 작으면 경쟁이 치열하다고 판단합니다.")
-    print("         이에 따라 {}의 {} 시장은 {} 유형으로 볼 수 있습니다.".format(user_input_loc_p1, user_input_type, percent_quali))
-    print()
 
     # Chart
-    print("  C. Chart")
-    print("      i. 의원 매출액 분포 (최근 12개월 평균) [BAR]")
     cc_holder = []
     for i in range(1, len(analysis_ppa_1000_list) + 1):
         cc_holder.append(str(i))
-    if len(cc_holder) > 10:
-        plt.bar(cc_holder[:10], analysis_ppa_1000_list[:10], width=0.6)
-        for i, v in enumerate(cc_holder[:10]):
-            plt.text(v, analysis_ppa_1000_list[:10][i], analysis_ppa_1000_list[:10][i],
-                     fontsize=11,
-                     color="black",
-                     horizontalalignment='center',
-                     verticalalignment='bottom')
-    else:
-        plt.bar(cc_holder, analysis_ppa_1000_list, width=0.6)
-        for i, v in enumerate(cc_holder):
-            plt.text(v, analysis_ppa_1000_list[i], analysis_ppa_1000_list[i],
-                     fontsize=11,
-                     color="black",
-                     horizontalalignment='center',
-                     verticalalignment='bottom')
-    plt.gca().xaxis.set_visible(False)
-    plt.gca().yaxis.set_visible(False)
-    plt.show()
-    print()
-    print("     ii. 의원별 점유율과 경쟁 지표")
+
     vvs_df = pd.DataFrame()
     vvs1 = []
     vvs2 = []
@@ -1246,20 +1068,6 @@ async def report(department: str, location: str):
     else:
         vvs_df_display = vvs_df
     vvs_df_display.loc[len(analysis_ppa_1000_list)] = ['', '경쟁 지표 (점유율 제곱 합)', sum(analysis_psq_list)]
-    print(tabulate(vvs_df_display, headers='keys', tablefmt='psql', showindex=False))
-
-    print()
-    print("    iii. 신규 의원 목록 (최근 24개월간) [TABLE]")
-    if len(recent_open_hos_df) == 0:
-        print("         1. 해당 사항 없음")
-    else:
-        print(tabulate(recent_open_hos_df, headers='keys', tablefmt='psql', showindex=False))
-    print()
-    print("     iv. 폐업 의원 목록 (최근 24개월간) [TABLE]")
-    if len(clh_df) == 0:
-        print("         1. 해당 사항 없음")
-    else:
-        print(tabulate(clh_df, headers='keys', tablefmt='psql', showindex=False))
 
     # JSON 출력을 위한 competitive_analysis 딕셔너리 홀더에 담기
     competitive_analysis = {
@@ -1319,6 +1127,8 @@ async def report(department: str, location: str):
         else:
             rate_sum_top10 += analysis_percent_list[i]
             rate_squared_sum_top10 += analysis_psq_list[i]
+
+    rest_count = 0
     if len(cc_holder) > 10:
         rest_count = len(cc_holder[10:])
     this_rest_info = {}
@@ -1361,7 +1171,7 @@ async def report(department: str, location: str):
 
     # # 4. 고객 분석
 
-    # In[160]:
+    # In[15]:
 
     # 주요 고객 성연령
     # 주요 고객 소득수준
@@ -1542,39 +1352,16 @@ async def report(department: str, location: str):
     else:
         maal_ident = "증가"
 
-    # 4. 고객 분석
-    print("4. 고객 분석")
-    print()
-    print("  A. Key Metric")
-    print("      i. 주요 고객 성연령 {}".format(fm_ident))
-    print("     ii. 주요 고객 소득수준 {}".format(ic_ident))
     this_short_amt = round(np.mean(my_avg_amt_short))
     if this_short_amt >= 10000:
         this_short_amt = str(this_short_amt // 10000) + "만 " + str(this_short_amt % 10000)
-    print("    iii. 평균 객단가 {}원".format(this_short_amt))
-    print()
 
-    # B. Text
-    print("  B. Text")
-    print("      i. {}에서 {}에 가장 많은 금액을 지불한 고객군은 {} 입니다. 성별로 보면 남성 {}%, 여성 {}%로 {}이 더 많습니다.".format(user_input_loc_p1,
-                                                                                                   user_input_type,
-                                                                                                   fm_ident, m_percent,
-                                                                                                   f_percent,
-                                                                                                   fm_percent_ident))
-    print("         남성 중 가장 큰 비중을 차지하는 연령대는 {}로, 전체 남성 중 {}%에 해당합니다.".format(m_ident, mm_percent))
-    print("         여성의 경우는 {}로, 전체 여성 중 {}%를 차지합니다. 소득수준별로 보면 {} 구간이 전체의 {}%로 가장 많습니다.".format(f_ident, ff_percent,
-                                                                                                ic_ident, ic_percent))
-    print("         평균 객단가는 {}원으로 나타났습니다.".format(this_short_amt))
     this_max_amt = round(max(my_avg_amt_short))
     if this_max_amt >= 10000:
         this_max_amt = str(this_max_amt // 10000) + "만 " + str(this_max_amt % 10000)
     this_min_amt = round(min(my_avg_amt_short))
     if this_min_amt >= 10000:
         this_min_amt = str(this_min_amt // 10000) + "만 " + str(this_min_amt % 10000)
-    print("         지난 12개월 중 최대값은 {}원 ({}년 {}월) 이며, 최소값은 {}원 ({}년 {}월) 입니다.".format(this_max_amt, amt_short_year[
-        my_avg_amt_short.index(max(my_avg_amt_short))] // 100, amt_short_year[my_avg_amt_short.index(
-        max(my_avg_amt_short))] % 100, this_min_amt, amt_short_year[my_avg_amt_short.index(
-        min(my_avg_amt_short))] // 100, amt_short_year[my_avg_amt_short.index(min(my_avg_amt_short))] % 100))
     this_3y_first_amt = round(my_avg_amt_long[0])
     if this_3y_first_amt >= 10000:
         this_3y_first_amt = str(this_3y_first_amt // 10000) + "만 " + str(this_3y_first_amt % 10000)
@@ -1582,51 +1369,6 @@ async def report(department: str, location: str):
     if this_3y_last_amt >= 10000:
         this_3y_last_amt = str(this_3y_last_amt // 10000) + "만 " + str(this_3y_last_amt & 10000)
     this_3y_percent = round((round(my_avg_amt_long[-1]) - round(my_avg_amt_long[0])) / round(my_avg_amt_long[0]) * 100)
-    print("         최근 3년 추세는 {}원에서 {}원으로 {}% {}하였습니다.".format(this_3y_first_amt, this_3y_last_amt, this_3y_percent,
-                                                               maal_ident))
-    print()
-
-    # C. Chart
-    print("  C. Chart")
-    print("      i. 성연령대별 매출 분포 [DONUT]")
-    print("         1. 성별 분포")
-    plt.pie([m_percent, f_percent], labels=['Male', 'Female'], startangle=276, autopct="%.0f%%",
-            wedgeprops={'width': 0.7, 'edgecolor': 'w', 'linewidth': 5})
-    plt.show()
-    print()
-    print("         2. 남성 연령 분포")
-    plt.pie([m_sum_holder[i] / sum(m_sum_holder) for i in range(len(m_sum_holder))],
-            labels=['20', '30', '40', '50', '60up'], startangle=60, counterclock=False, autopct="%.0f%%",
-            wedgeprops={'width': 0.7, 'edgecolor': 'w', 'linewidth': 5})
-    plt.show()
-    print()
-    print("         3. 여성 연령 분포")
-    plt.pie([f_sum_holder[i] / sum(f_sum_holder) for i in range(len(f_sum_holder))],
-            labels=['20', '30', '40', '50', '60up'], startangle=60, counterclock=False, autopct="%.0f%%",
-            wedgeprops={'width': 0.7, 'edgecolor': 'w', 'linewidth': 5})
-    plt.show()
-    print()
-    print("     ii. 소득수준별 매출 분포 [DONUT]")
-    plt.pie([ic_sum_holder[i] / sum(ic_sum_holder) for i in range(len(ic_sum_holder))],
-            labels=['0000', '2000down', '2~3000', '3~4000', '4~6000', '6~8000', '8000~10000', '10000up'], startangle=90,
-            counterclock=False, autopct="%.0f%%", wedgeprops={'width': 0.7, 'edgecolor': 'w', 'linewidth': 5})
-    plt.show()
-    print()
-    print("    iii. 객단가 단기 추세 (12개월) [LINE]")
-    plt.plot(tt_holder, my_avg_amt_short, label="객단가 (단기)", linewidth=3, marker='o')
-    plt.show()
-    print()
-    print("     iv. 객단가 장기 추세 (3년) [BAR]")
-    plt.bar(["1", "2", "3"], my_avg_amt_long, width=0.6)
-    for i, v in enumerate(["1", "2", "3"]):
-        plt.text(v, round(my_avg_amt_long[i]), round(my_avg_amt_long[i]),
-                 fontsize=11,
-                 color="black",
-                 horizontalalignment='center',
-                 verticalalignment='bottom')
-    plt.gca().xaxis.set_visible(False)
-    plt.gca().yaxis.set_visible(False)
-    plt.show()
 
     # JSON 출력을 위한 user_analysis 딕셔너리 홀더에 담기
     user_analysis = {
