@@ -1,0 +1,11 @@
+fastapi==0.78.0
+matplotlib==3.5.2
+numpy==1.22.4
+pandas==1.4.2
+pydantic==1.9.1
+python_dateutil==2.8.2
+tabulate==0.8.9
+uvicorn==0.12.3
+aiofiles==0.6.0
+python-multipart==0.0.5
+jinja2==2.11.2
