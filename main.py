@@ -25,6 +25,7 @@ app.add_middleware(
 
 
 class Report(BaseModel):
+    hdong: object
     intro: object
     market_analysis: object
     competitive_analysis: object
