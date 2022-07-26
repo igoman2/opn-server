@@ -311,7 +311,7 @@ async def report(department: str, location: str):
 
     # # 2. 시장 분석
 
-    # In[22]:
+    # In[7]:
 
     # 시장분석용 파일 불러오기
     # 2020년, 2021년 병의원 목록 불러오기
@@ -349,8 +349,8 @@ async def report(department: str, location: str):
     market_df = market_df.reset_index()
     ppa_holder = []
     for i in range(len(market_df)):
-        if market_df['area'][i] == "-":
-            ppa_holder.append(market_df['EST_HGA'][i] / (sum(market_df[market_df['area'] != "-"]['area']) / len(
+        if market_df['area'][i] == 0:
+            ppa_holder.append(market_df['EST_HGA'][i] / (sum(market_df[market_df['area'] != 0]['area']) / len(
                 market_df[market_df['area'] != "-"]['area'])))
         else:
             ppa_holder.append(market_df['EST_HGA'][i] / market_df['area'][i])
@@ -523,7 +523,6 @@ async def report(department: str, location: str):
             min_msize = str(min_msize // 10000) + "억 " + str(min_msize % 10000) + "만원"
     else:
         min_msize = str(min_msize) + "만원"
-
     if early_size >= 10000:
         if early_size % 10000 == 0:
             early_size = str(early_size // 10000) + "억원"
@@ -831,17 +830,28 @@ async def report(department: str, location: str):
         "market_min_year": str(min_year) + "년",
         "market_min_month": str(min_month) + "월",
         "3y_trend_start_year": str(early_year) + "년",
+        "three_year_trend_start_year": str(early_year) + "년",
         "3y_trend_start_market_size": str(early_size),
+        "three_year_trend_start_market_size": str(early_size),
         "3y_trend_end_year": str(late_year) + "년",
+        "three_year_trend_end_year": str(late_year) + "년",
         "3y_trend_end_market_size": str(late_size),
+        "three_year_trend_end_market_size": str(late_size),
         "3y_trend_percent": str(abs(three_percent)) + "%",
+        "three_year_trend_percent": str(abs(three_percent)) + "%",
         "3y_trend_hospital_count_difference": str(abs(hos_now_count - hos_2020_count)) + "개",
+        "three_year_trend_hospital_count_difference": str(abs(hos_now_count - hos_2020_count)) + "개",
         "profit_per_50p": str(pp_short_cost * 50) + "만원",
         "3y_trend_profit_per_area_start_year": str(p_early_year) + "년",
+        "three_year_trend_profit_per_area_start_year": str(p_early_year) + "년",
         "3y_trend_profit_per_area_start_market_size": str(p_early_size) + "만원",
+        "three_year_trend_profit_per_area_start_market_size": str(p_early_size) + "만원",
         "3y_trend_profit_per_area_end_year": str(p_late_year) + "년",
+        "three_year_trend_profit_per_area_end_year": str(p_late_year) + "년",
         "3y_trend_profit_per_area_end_market_size": str(p_late_size) + "만원",
+        "three_year_trend_profit_per_area_end_market_size": str(p_late_size) + "만원",
         "3y_trend_profit_per_area_percent": str(abs(three_percent2)) + "%",
+        "three_year_trend_profit_per_area_percent": str(abs(three_percent2)) + "%",
         "market_size_short_trend": [
         ],
         "market_size_long_trend": [
@@ -896,7 +906,7 @@ async def report(department: str, location: str):
 
     # # 3. 경쟁 분석
 
-    # In[23]:
+    # In[9]:
 
     # 전체 의원 평균 매출액
     # 신규 의원 평균 매출액
@@ -906,8 +916,7 @@ async def report(department: str, location: str):
     closed_hos_df = pd.read_excel("폐업_병의원목록.xlsx")
 
     # 위에서 가져온 심평원코드 활용
-    vs_analysis_df = market_df[market_df['sim_cd'].isin(s_simcode_holder)]
-    vs_analysis_df = vs_analysis_df[vs_analysis_df['TA_YM'] >= (my_date - 100)]
+    vs_analysis_df = market_df[market_df['TA_YM'] >= (my_date - 100)]
 
     # 각종 필요한 정보 산출해내기
     # 전체 의원 평균 매출액
@@ -949,14 +958,16 @@ async def report(department: str, location: str):
     vs_newhos_profit_holder = []
     # 탐색 중 개업일자가 최근 24개월 내라면 holder에 값들 넣기
     for i in range(len(analysis_simcd_list)):
-        vs_newhos_opendate = hos_df['개설일자'].to_list()[i]
-        # 신규 의원 목록 가려내는 작업
-        if vs_newhos_opendate > (datetime.today() - relativedelta(years=2)):
-            vs_newhos_opendate_holder.append(vs_newhos_opendate.strftime("%Y년 %m월 %d일"))
-            vs_newhos_name_holder.append(hos_df[hos_df['심평원코드'] == analysis_simcd_list[i]]['의원명'].to_list()[0])
-            vs_newhos_area_holder.append(hos_df[hos_df['심평원코드'] == analysis_simcd_list[i]]['총면적(평)'].to_list()[0])
-            vs_newhos_prof_holder.append(hos_df[hos_df['심평원코드'] == analysis_simcd_list[i]]['전문의수'].to_list()[0])
-            vs_newhos_profit_holder.append(analysis_ppa_list[i])
+        for j in range(len(hos_df)):
+            vs_newhos_opendate = hos_df['개설일자'].to_list()[j]
+            # 신규 의원 목록 가려내는 작업
+            if (analysis_simcd_list[i] == hos_df['심평원코드'].to_list()[j]) and (
+                    vs_newhos_opendate > (datetime.today() - relativedelta(years=2))):
+                vs_newhos_opendate_holder.append(vs_newhos_opendate.strftime("%Y년 %m월 %d일"))
+                vs_newhos_name_holder.append(hos_df['의원명'].to_list()[j])
+                vs_newhos_area_holder.append(hos_df['총면적(평)'].to_list()[j])
+                vs_newhos_prof_holder.append(hos_df['전문의수'].to_list()[j])
+                vs_newhos_profit_holder.append(analysis_ppa_list[i])
 
     # 최근 개원 의원 데이터프레임화 시키기
     recent_open_hos_df = pd.DataFrame()
@@ -1208,7 +1219,7 @@ async def report(department: str, location: str):
 
     # # 4. 고객 분석
 
-    # In[24]:
+    # In[10]:
 
     # 주요 고객 성연령
     # 주요 고객 소득수준
@@ -1437,9 +1448,13 @@ async def report(department: str, location: str):
         "min_average_profit_per_customer_month": str(
             amt_short_year[my_avg_amt_short.index(min(my_avg_amt_short))] % 100) + "월",
         "3year_trend_early_size": str(this_3y_first_amt) + "원",
+        "three_year_trend_early_size": str(this_3y_first_amt) + "원",
         "3year_trend_late_size": str(this_3y_last_amt) + "원",
+        "three_year_trend_late_size": str(this_3y_last_amt) + "원",
         "3year_trend_percent": str(abs(this_3y_percent)) + "%",
+        "three_year_trend_percent": str(abs(this_3y_percent)) + "%",
         "3year_trend_compare": maal_ident,
+        "three_year_trend_compare": maal_ident,
         "sex_distribution_chart": [
         ],
         "male_age_distribution_chart": [
@@ -1503,8 +1518,13 @@ async def report(department: str, location: str):
         this_appc_long['value'] = round(my_avg_amt_long[i])
         user_analysis['average_profit_per_customer_long_chart'].append(this_appc_long)
 
+    hdong_list = {}
+    for i in range(len(hdong_code_df)):
+        hdong_list['{}'.format(i)] = hdong_code_df['통합주소'][i]
+
     # JSON 형식 통합 결과물 내기
     result = {
+        "hdong": hdong_list,
         "intro": intro,
         "market_analysis": market_analysis,
         "competitive_analysis": competitive_analysis,
